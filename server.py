@@ -14,6 +14,7 @@ class DemoServer(itcast_pb2_grpc.DemoServicer):
             'shanghai': ['python', 'c++', 'go', '测试', 'java', '产品'],
             'wuhan': ['python', 'java']
         }
+        self.answers = list(range(10))
 
     def Calculate(self, request, context):
         if request.op == itcast_pb2.Work.ADD:
@@ -46,6 +47,11 @@ class DemoServer(itcast_pb2_grpc.DemoServicer):
             sum += request.val
         return itcast_pb2.Sub(val=sum)
 
+    def GuessNumber(self, request_iterator, context):
+        for request in request_iterator:
+            if request.val in self.answers:
+                yield itcast_pb2.Answer(val=request.val, desc='我是返回值:{}'.format(request.val))
+
 
 # 开启服务器，对外提供rpc调用
 def server():
@@ -56,7 +62,7 @@ def server():
     # 为服务器设置地址
     server_obj.add_insecure_port('127.0.0.1:8000')
     # 开启服务器
-    print('服务器已开启')
+    print('服务器已开启了')
     server_obj.start()
     # 关闭服务器
     try:

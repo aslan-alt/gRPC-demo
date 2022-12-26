@@ -50,13 +50,26 @@ def invoke_accumulate(stub):
     print('sum={}'.format(sum.val))
 
 
+def generate_number():
+    for _ in range(10):
+        yield itcast_pb2.Delta(val=random.randint(1, 20))
+
+
+def invoke_guess_number(stub):
+    answers = stub.GuessNumber(generate_number())
+    for answer in answers:
+        print('value:{}'.format(answer.val))
+        print('desc:{}'.format(answer.desc))
+
+
 def run():
     with grpc.insecure_channel('127.0.0.1:8000') as channel:
         # 创建辅助客户端调用的stub对象
         stub = itcast_pb2_grpc.DemoStub(channel)
         # invoke_calculate(stub)
         # invoke_get_subjects(stub)
-        invoke_accumulate(stub)
+        # invoke_accumulate(stub)
+        invoke_guess_number(stub)
 
 
 if __name__ == '__main__':
