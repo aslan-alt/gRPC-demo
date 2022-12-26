@@ -30,11 +30,20 @@ def invoke_calculate(stub):
         print('{}:{}'.format(e.code(), e.details()))
 
 
+def invoke_get_subjects(stub):
+    city = itcast_pb2.City(name='bejing')
+    subjects = stub.GetSubjects(city)
+    for subject in subjects:
+        print(subject.name)
+
+
 def run():
     with grpc.insecure_channel('127.0.0.1:8000') as channel:
         # 创建辅助客户端调用的stub对象
         stub = itcast_pb2_grpc.DemoStub(channel)
-        invoke_calculate(stub)
+        # invoke_calculate(stub)
+        invoke_get_subjects(stub)
+        #
 
 
 if __name__ == '__main__':

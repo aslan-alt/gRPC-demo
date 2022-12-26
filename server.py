@@ -8,6 +8,12 @@ from concurrent import futures
 
 # 实现被调用的方法的具体代码
 class DemoServer(itcast_pb2_grpc.DemoServicer):
+    def __init__(self):
+        self.city_subjects_db = {
+            'bejing': ['python', 'c++', 'go', '测试', 'java'],
+            'shanghai': ['python', 'c++', 'go', '测试', 'java', '产品'],
+            'wuhan': ['python', 'java']
+        }
 
     def Calculate(self, request, context):
         if request.op == itcast_pb2.Work.ADD:
@@ -27,6 +33,12 @@ class DemoServer(itcast_pb2_grpc.DemoServicer):
             context.set_code(grpc.StatusCode.INVALID_ARGUMENT)
             context.set_details('cannot divide by zero')
             return itcast_pb2.Result()
+
+    def GetSubjects(self, request, context):
+        city = request.name
+        subjects = self.city_subjects_db.get(city)
+        for subject in subjects:
+            yield itcast_pb2.Subject(name=subject)
 
 
 # 开启服务器，对外提供rpc调用
