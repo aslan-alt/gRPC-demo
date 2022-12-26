@@ -40,6 +40,12 @@ class DemoServer(itcast_pb2_grpc.DemoServicer):
         for subject in subjects:
             yield itcast_pb2.Subject(name=subject)
 
+    def Accumulate(self, request_iterator, context):
+        sum = 0
+        for request in request_iterator:
+            sum += request.val
+        return itcast_pb2.Sub(val=sum)
+
 
 # 开启服务器，对外提供rpc调用
 def server():

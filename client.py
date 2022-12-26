@@ -1,3 +1,5 @@
+import random
+
 import grpc
 
 import itcast_pb2
@@ -37,13 +39,24 @@ def invoke_get_subjects(stub):
         print(subject.name)
 
 
+def generate_delta():
+    for _ in range(10):
+        yield itcast_pb2.Delta(val=random.randint(1, 100))
+
+
+def invoke_accumulate(stub):
+    delta_iterator = generate_delta()
+    sum = stub.Accumulate(delta_iterator)
+    print('sum={}'.format(sum.val))
+
+
 def run():
     with grpc.insecure_channel('127.0.0.1:8000') as channel:
         # 创建辅助客户端调用的stub对象
         stub = itcast_pb2_grpc.DemoStub(channel)
         # invoke_calculate(stub)
-        invoke_get_subjects(stub)
-        #
+        # invoke_get_subjects(stub)
+        invoke_accumulate(stub)
 
 
 if __name__ == '__main__':
