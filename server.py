@@ -36,7 +36,7 @@ def server():
     # 注册实现的服务方法到服务器对象中
     itcast_pb2_grpc.add_DemoServicer_to_server(DemoServer(), server_obj)
     # 为服务器设置地址
-    server.add_insecure_port('127.0.0.1:8000')
+    server_obj.add_insecure_port('127.0.0.1:8000')
     # 开启服务器
     print('服务器已开启')
     server_obj.start()
@@ -45,7 +45,6 @@ def server():
         time.sleep(1000)
     except KeyboardInterrupt:
         server_obj.stop()
-
 
 
 if __name__ == '__main__':
